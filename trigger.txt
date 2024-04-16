@@ -1,0 +1,38 @@
+1.TRİGGER: Bir adet araba silme triggeri yazılmak istenmektedir eğer bu araba daha satılmamışsa
+silinmesini engelleyen bir trigger yazınız.
+create trigger arabaSilme
+on
+tbl_Araba
+instead of delete
+As Begin
+if Exists(
+select * from tbl_Araba TA inner join tbl_Musteri TM
+ON
+TA.arabaID=TM.satilanArabaID
+where satilanArabaID in (Select arabaID from deleted)
+)
+BEGIN
+RAISERROR('Araba satışı yapılmamış araba silinemez.',16,1)
+ROLLBACK
+END
+END
+
+
+2.TRİGGER: Bir personel silme işlemi yapılacaktır eğer silinen personel yönetim kurulunda ise silme
+işlemini gerçekleştirmeyen triggeri yazınız
+create trigger personelSilme
+on
+tbl_Personel
+instead of delete
+As Begin
+if Exists(
+select * from tbl_Personel TP inner join tbl_Departman TD
+on
+TP.departmanID=TD.departmanID
+where personelID in (Select personelID from deleted) AND TD.ad='YÖNETİM KURULU'
+)
+BEGIN
+RAISERROR(' YÖNETİM KURULUNDAKİ PERSONEL SİLİNEMEZ.',16,1)
+ROLLBACK
+END
+END

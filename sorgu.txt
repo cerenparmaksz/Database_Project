@@ -1,0 +1,128 @@
+ceren parmaksız 20253081
+
+sorgu1-)personellerin ilgilendiği müşteri sayılarını getirten ve ilgilendiği müşteri sayısına göre her müşteri başına maaşlara +100tl zam yapan sp sorgusu
+
+
+CREATE PROCEDURE Procedure2
+AS 
+BEGIN 
+IF (SELECT TM.ilgiliPersonelID from tbl_Musteri TM inner join tbl_Personel TP ON TM.ilgiliPersonelID=TP.personelID)>0
+BEGIN
+UPDATE tbl_Personel  set maas=maas+(select count(tm.ilgiliPersonelID) from tbl_Musteri TM inner join tbl_Personel TP ON TM.ilgiliPersonelID=TP.personelID)*100
+select 'ilgilendiği musteri sayısı: '+ COUNT(TM.ilgiliPersonelID) from tbl_Musteri TM inner join tbl_Personel TP ON TM.ilgiliPersonelID=TP.personelID
+END
+Else
+BEGIN
+SELECT 'İLGİLENDİĞİ MÜŞTERİ SAYISI = 0'
+END
+END
+
+
+sorgu2-)parametre olarak araba markası,fiyatı,rengi,çıkış yılı,model,vites özelliği,çekiş türü,kasa tipi,yakıt türü,motor hacmi ve motor gücünü alan bu bilgilere göre yeni araba ekleyen sp sorgusunu yazınız eğer verilen donanım özellikleri daha önceden mevcut değilse donanım özellikleri tablosuna da ekleme yapalım.
+
+
+create proc Sp_ArabaEkle
+@marka as nvarchar(50),
+@fiyat as money,
+@renk  as nvarchar(50),
+@cikisYil as  date,
+@model as nvarchar(50),
+@vites as nvarchar(50),
+@cekisTur as nvarchar(50),
+@kasaTip as nvarchar(50),
+@yakitTur as nvarchar(50),
+@motorHacim as int,
+@motorGuc as int,
+@result as int out
+as begin
+begin transaction
+if EXISTS(SELECT *from tbl_DonanimOzellik where vitesOzellik=@vites and cekisTur=@cekisTur and kasaTip=@kasaTip and motorGucu=@motorGuc and motorHacim=@motorHacim)
+begin
+set @result=1
+insert into tbl_Araba values
+(@marka,@fiyat,@renk,@cikisYil,@model,
+(SELECT donanimID from tbl_DonanimOzellik where vitesOzellik=@vites and cekisTur=@cekisTur and kasaTip=@kasaTip and motorGucu=@motorGuc and motorHacim=@motorHacim ))
+end
+else
+begin
+select @result=1
+insert into tbl_DonanimOzellik values (null,@vites,@cekisTur,@kasaTip,(select yakitID from tbl_YakitTuru where ad=@yakitTur),@motorGuc,@motorHacim)
+insert into tbl_Araba values
+(@marka,@fiyat,@renk,@cikisYil,@model,
+(SELECT donanimID from tbl_DonanimOzellik where vitesOzellik=@vites and cekisTur=@cekisTur and kasaTip=@kasaTip and motorGucu=@motorGuc and motorHacim=@motorHacim ))
+end
+if(@@ERROR<>0)
+begin
+rollback transaction
+set @result=0
+end
+commit transaction
+end
+
+
+
+
+
+sorgu1-)Otomobil Bayide işten çıkarımlar yapılmak istenmektedir buna göre personellerin adını ve ilgilendiği müşteri sayısını gösterelim. 10'dan az müşteri ile ilgilenilmişse işten çıkarılacağı yazılmalı eğer 10'dan fazla müşteri ile ilgilenilmişse işten çıkarılmayacağını yazdıran sp sorgusu
+n 
+
+CREATE PROCEDURE Procedure3
+AS 
+BEGIN 
+select
+TP.isim,
+ilgilendigiMusteriSayisi=
+case 
+	when count(TM.ilgiliPersonelID)=0 THEN 'İLGİLENDİĞİ MÜŞTERİ SAYISI=0' 
+	ELSE CAST(COUNT(TM.ilgiliPersonelID) as nvarchar(5))
+end,
+İstenCikarilmaDurumu=
+case
+when count(TM.ilgiliPersonelID)>0 and count(TM.ilgiliPersonelID)<10 THEN 'işten çıkarılacak' 
+	when count(TM.ilgiliPersonelID)>10 THEN 'işten çıkarılmayacak' 
+end
+from tbl_Personel TP inner join tbl_Musteri TM
+ON
+TP.personelID=TM.ilgiliPersonelID
+GROUP BY TP.isim
+end
+
+
+
+
+sorgu2-)parametre olarak personel adı,soyadı,doğum tarihi,işe giriş tarihi,telefon no,adres ve departman bilgilerini alan sp sorgusunu yazınız eğer verilen departman daha önceden kayıtlı değilse departman tablosuna ekleme yapınız.
+
+
+create proc Sp_PersonelEkle
+@ad as nvarchar(50),
+@soyad as nvarchar(50),
+@DogumTarih as date,
+@IseGirisTarih as date,
+@telefon as nvarchar(20),
+@adres as nvarchar(80),
+@departman as nvarchar(20),
+@result as int out
+as begin
+begin transaction
+if EXISTS(SELECT *from tbl_Departman where ad=@departman)
+begin
+set @result=1
+insert into tbl_Personel values
+(@ad,@soyad,@DogumTarih,@IseGirisTarih,@telefon,@adres,null,
+(select departmanID from tbl_Departman where ad=@departman))
+end
+else
+begin
+select @result=1
+insert into tbl_Departman values (@departman)
+insert into tbl_Personel values
+(@ad,@soyad,@DogumTarih,@IseGirisTarih,@telefon,@adres,null,
+(select departmanID from tbl_Departman where ad=@departman))
+end
+if(@@ERROR<>0)
+begin
+rollback transaction
+set @result=0
+end
+commit transaction
+end

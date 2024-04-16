@@ -1,0 +1,181 @@
+
+
+
+
+CREATE database OtoBayi
+ Go
+USE [OtoBayi]
+GO
+CREATE TABLE [dbo].[tbl_Araba](
+	[arabaID] [int] IDENTITY(1,1) NOT NULL,
+	[marka] [nvarchar](50) NULL,
+	[fiyat] [money] NULL,
+	[renk] [nchar](20) NULL,
+	[cikisYili] [smalldatetime] NULL,
+	[model] [nvarchar](50) NULL,
+	[donanimOzellikleriID] [int] NULL,
+ CONSTRAINT [PK_tbl_Araba] PRIMARY KEY CLUSTERED 
+(
+	[arabaID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_Departman](
+	[ad] [nvarchar](50) NULL,
+	[departmanID] [int] IDENTITY(1,1) NOT NULL,
+ CONSTRAINT [PK_tbl_Departman] PRIMARY KEY CLUSTERED 
+(
+	[departmanID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_DonanimOzellik](
+	[donanimID] [int] NOT NULL,
+	[vitesOzellik] [nchar](10) NULL,
+	[motorGuc] [tinyint] NULL,
+	[motorHacim] [tinyint] NULL,
+	[cekisTur] [nvarchar](50) NULL,
+	[kasaTip] [nvarchar](50) NULL,
+	[yakitTurID] [int] NULL,
+ CONSTRAINT [PK_tbl_DonanimOzellik] PRIMARY KEY CLUSTERED 
+(
+	[donanimID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_ikinciEl](
+	[ID] [int] NOT NULL,
+	[hasarDurum] [nvarchar](500) NULL,
+	[kmBilgi] [int] NULL,
+ CONSTRAINT [PK_tbl_ikinciEl] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_Musteri](
+	[isim] [nvarchar](50) NULL,
+	[soyisim] [nvarchar](50) NULL,
+	[musteriID] [int] NOT NULL,
+	[ilgiliPersonelID] [int] NULL,
+	[adres] [nvarchar](500) NULL,
+	[telefon] [nvarchar](11) NULL,
+	[satilanArabaID] [int] NULL,
+	[satinAlmaTarihi] [smalldatetime] NULL,
+ CONSTRAINT [PK_tbl_Musteri] PRIMARY KEY CLUSTERED 
+(
+	[musteriID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_Personel](
+	[personelID] [int] IDENTITY(1,1) NOT NULL,
+	[isim] [nvarchar](50) NULL,
+	[soyisim] [nvarchar](50) NULL,
+	[dogumTarihi] [smalldatetime] NULL,
+	[iseGirisTarihi] [smalldatetime] NULL,
+	[telefonNo] [char](11) NULL,
+	[adres] [nvarchar](200) NULL,
+	[maas] [float] NULL,
+	[departmanID] [int] NULL,
+ CONSTRAINT [PK_tbl_Personel] PRIMARY KEY CLUSTERED 
+(
+	[personelID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_Servis](
+	[servisAracID] [int] NOT NULL,
+	[gelisSebebi] [nvarchar](500) NULL,
+	[gelisTarih] [smalldatetime] NULL,
+	[cikisTarihi] [smalldatetime] NULL,
+	[yedekParcaID] [int] NULL,
+ CONSTRAINT [PK_tbl_Servis] PRIMARY KEY CLUSTERED 
+(
+	[servisAracID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_Siparis](
+	[siparisID] [int] IDENTITY(1,1) NOT NULL,
+	[istenilenUrunID] [int] NULL,
+	[siparisTarih] [smalldatetime] NULL,
+	[teslimatTarih] [smalldatetime] NULL,
+ CONSTRAINT [PK_tbl_Siparis] PRIMARY KEY CLUSTERED 
+(
+	[siparisID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_YakitTuru](
+	[yakitID] [int] NOT NULL,
+	[ad] [nvarchar](50) NULL,
+ CONSTRAINT [PK_tbl_YakitTuru] PRIMARY KEY CLUSTERED 
+(
+	[yakitID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+CREATE TABLE [dbo].[tbl_YedekParca](
+	[yedekParcaID] [int] NOT NULL,
+	[ad] [nvarchar](50) NULL,
+	[fiyat] [money] NULL,
+ CONSTRAINT [PK_tbl_YedekParca] PRIMARY KEY CLUSTERED 
+(
+	[yedekParcaID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[tbl_Araba]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Araba_tbl_DonanimOzellik] FOREIGN KEY([donanimOzellikleriID])
+REFERENCES [dbo].[tbl_DonanimOzellik] ([donanimID])
+GO
+ALTER TABLE [dbo].[tbl_Araba] CHECK CONSTRAINT [FK_tbl_Araba_tbl_DonanimOzellik]
+GO
+ALTER TABLE [dbo].[tbl_Araba]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Araba_tbl_ikinciEl] FOREIGN KEY([arabaID])
+REFERENCES [dbo].[tbl_ikinciEl] ([ID])
+GO
+ALTER TABLE [dbo].[tbl_Araba] CHECK CONSTRAINT [FK_tbl_Araba_tbl_ikinciEl]
+GO
+ALTER TABLE [dbo].[tbl_DonanimOzellik]  WITH CHECK ADD  CONSTRAINT [FK_tbl_DonanimOzellik_tbl_YakitTuru] FOREIGN KEY([yakitTurID])
+REFERENCES [dbo].[tbl_YakitTuru] ([yakitID])
+GO
+ALTER TABLE [dbo].[tbl_DonanimOzellik] CHECK CONSTRAINT [FK_tbl_DonanimOzellik_tbl_YakitTuru]
+GO
+ALTER TABLE [dbo].[tbl_Musteri]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Musteri_tbl_Araba] FOREIGN KEY([satilanArabaID])
+REFERENCES [dbo].[tbl_Araba] ([arabaID])
+GO
+ALTER TABLE [dbo].[tbl_Musteri] CHECK CONSTRAINT [FK_tbl_Musteri_tbl_Araba]
+GO
+ALTER TABLE [dbo].[tbl_Musteri]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Musteri_tbl_Personel] FOREIGN KEY([ilgiliPersonelID])
+REFERENCES [dbo].[tbl_Personel] ([personelID])
+GO
+ALTER TABLE [dbo].[tbl_Musteri] CHECK CONSTRAINT [FK_tbl_Musteri_tbl_Personel]
+GO
+ALTER TABLE [dbo].[tbl_Personel]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Personel_tbl_Departman] FOREIGN KEY([departmanID])
+REFERENCES [dbo].[tbl_Departman] ([departmanID])
+GO
+ALTER TABLE [dbo].[tbl_Personel] CHECK CONSTRAINT [FK_tbl_Personel_tbl_Departman]
+GO
+ALTER TABLE [dbo].[tbl_Servis]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Servis_tbl_Araba] FOREIGN KEY([servisAracID])
+REFERENCES [dbo].[tbl_Araba] ([arabaID])
+GO
+ALTER TABLE [dbo].[tbl_Servis] CHECK CONSTRAINT [FK_tbl_Servis_tbl_Araba]
+GO
+ALTER TABLE [dbo].[tbl_Servis]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Servis_tbl_YedekParca] FOREIGN KEY([yedekParcaID])
+REFERENCES [dbo].[tbl_YedekParca] ([yedekParcaID])
+GO
+ALTER TABLE [dbo].[tbl_Servis] CHECK CONSTRAINT [FK_tbl_Servis_tbl_YedekParca]
+GO
+ALTER TABLE [dbo].[tbl_Siparis]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Siparis_tbl_Araba] FOREIGN KEY([istenilenUrunID])
+REFERENCES [dbo].[tbl_Araba] ([arabaID])
+GO
+ALTER TABLE [dbo].[tbl_Siparis] CHECK CONSTRAINT [FK_tbl_Siparis_tbl_Araba]
+GO
+ALTER TABLE [dbo].[tbl_Siparis]  WITH CHECK ADD  CONSTRAINT [FK_tbl_Siparis_tbl_YedekParca] FOREIGN KEY([istenilenUrunID])
+REFERENCES [dbo].[tbl_YedekParca] ([yedekParcaID])
+GO
+ALTER TABLE [dbo].[tbl_Siparis] CHECK CONSTRAINT [FK_tbl_Siparis_tbl_YedekParca]
+GO
+
+
+

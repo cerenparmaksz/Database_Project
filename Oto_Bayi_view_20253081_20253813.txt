@@ -1,0 +1,35 @@
+ceren parmaksız 20253081
+
+sorgu1-) Arabaların bütün özelliklerini,iknci el durumunu,donanım özelliklerini getiren sorgu
+
+create View ArabaOzellikleri
+As
+select fiyat,renk,marka,cikisYili,model,vitesOzellik,motorGuc,motorHacim,cekisTur,kasaTip,ad as 'yakıt türü' ,hasarDurum,kmBilgi from tbl_Araba araba inner join
+tbl_DonanimOzellik donanim 
+on
+araba.arabaID=donanim.donanimID
+inner join tbl_ikinciEl ikinciel
+on
+araba.arabaID=ikinciel.ID
+inner join tbl_YakitTuru yakittur
+on 
+donanim.yakitTurID=yakittur.yakitID
+
+
+
+
+
+
+selin ermiş 20253813
+
+sorgu2-)personellerin tüm bilgilerini ve hangi müşteriye hizmet verdiklerini getiren sorgu
+
+create View PersonelOzellikleri
+As
+select personel.isim,personel.soyisim,dogumTarihi,iseGirisTarihi,telefonNo,personel.adres,maas ,musteri.isim as 'ilgilendiği müsteri'
+from tbl_Personel personel inner join tbl_Departman departman
+on
+personel.departmanID=departman.departmanID
+inner join tbl_Musteri musteri 
+on
+personel.personelID=musteri.ilgiliPersonelID

@@ -61,5 +61,49 @@ INNER JOIN
 INNER JOIN 
     tbl_Musteri musteri ON personel.personelID = musteri.ilgiliPersonelID;
 ```
+## Trigger Tanımları
+
+### Araba Silme Triggerı
+
+Bir araba silme işlemi gerçekleştirilirken, bu arabanın daha önce satılmadığı kontrol edilerek silinmesi engellenmektedir.
+
+```sql
+create trigger arabaSilme
+on tbl_Araba
+instead of delete
+As 
+Begin
+    if Exists(
+        select * from tbl_Araba TA 
+        inner join tbl_Musteri TM ON TA.arabaID=TM.satilanArabaID
+        where satilanArabaID in (Select arabaID from deleted)
+    )
+    BEGIN
+        RAISERROR('Araba satışı yapılmamış araba silinemez.',16,1)
+        ROLLBACK
+    END
+END
+```
+
+### Personel Silme Triggerı
+
+Bir personel silme işlemi yapılırken, silinen personelin yönetim kurulunda olup olmadığı kontrol edilerek silme işlemi gerçekleştirilmemektedir.
+
+```sql
+create trigger personelSilme
+on tbl_Personel
+instead of delete
+As 
+Begin
+    if Exists(
+        select * from tbl_Personel TP 
+        inner join tbl_Departman TD on TP.departmanID=TD.departmanID
+        where personelID in (Select personelID from deleted) AND TD.ad='YÖNETİM KURULU'
+    )
+    BEGIN
+        RAISERROR('YÖNETİM KURULUNDAKİ PERSONEL SİLİNEMEZ.',16,1)
+        ROLLBACK
+    END
+END
 
 
